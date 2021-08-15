@@ -1,0 +1,10 @@
+<h2>Add new</h2>
+<form [formGroup]="transactionForm" (submit)="createTransaction()">
+  <label for="crypto">crypto</label>
+  <input id="crypto" type="text" formControlName="crypto">
+  <label for="amount">amount</label>
+  <input id="amount" type="text" formControlName="amount">
+  <label for="price">price</label>
+  <input id="price" type="text" formControlName="price">
+  <button>Add</button>
+</form>
