@@ -1,10 +1,53 @@
-<h2>Add new</h2>
-<form [formGroup]="transactionForm" (submit)="createTransaction()">
-  <label for="crypto">crypto</label>
-  <input id="crypto" type="text" formControlName="crypto">
-  <label for="amount">amount</label>
-  <input id="amount" type="text" formControlName="amount">
-  <label for="price">price</label>
-  <input id="price" type="text" formControlName="price">
-  <button>Add</button>
-</form>
+<div class="create-page">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">Create User</li>
+    </ol>
+  </nav>
+  <div class="page-content col-lg-6 col-xl-4">
+    <div class="row">
+      <div class="col">
+        <ul class="crypto">
+          <li
+            (click)="chooseCrypto(item.id)"
+            [class.active]="transactionForm.controls.crypto.value === item.id"
+            *ngFor="let item of crypto">{{ item.name }}</li>
+        </ul>
+        <form class="create-form" [formGroup]="transactionForm" novalidate (submit)="createTransaction()">
+          <div class="form-group">
+            <mat-form-field class="input-style">
+              <input matInput placeholder="Amount" class="form-control" formControlName="amount">
+            </mat-form-field>
+            <!-- <ng-container *ngFor="let validation of validation_messages.name">
+              <mat-error *ngIf="exampleForm.get('name').hasError(validation.type) && (exampleForm.get('name').dirty || exampleForm.get('name').touched)">{{validation.message}}</mat-error>
+            </ng-container> -->
+          </div>
+
+          <div class="form-group">
+            <mat-form-field class="input-style">
+              <input matInput type="text" placeholder="Price" class="form-control" formControlName="price">
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field class="input-style">
+              <input matInput type="text" placeholder="Cost" class="form-control" formControlName="cost">
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field class="input-style">
+              <input matInput type="datetime-local" placeholder="Date" class="form-control" formControlName="date">
+            </mat-form-field>
+          </div>
+
+          <div class="row submit-button-container">
+            <div class="col-md-4">
+              <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="!transactionForm.valid">Create</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

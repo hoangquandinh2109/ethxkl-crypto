@@ -1,1 +1,46 @@
-<p>home works!</p>
+<div class="container">
+  <!-- <div class="row">
+    <div class="col-md-4">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search by name...">
+        <div class="input-group-append">
+          <span class="input-group-text"><ion-icon class="icon" name="search"></ion-icon></span>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="users-list row">
+    <h2>Crypto</h2>
+    <h3><strong>All capital:</strong> {{ allCryptoCapital | number: '1.0-10' }} USDT</h3>
+    <h3><strong>Net assets:</strong> {{ cryptosNetAssets }}</h3>
+    <div *ngFor="let item of cryptos" class="col-md-6">
+      <div class="user-item">
+        <h3 class="mb-1">{{ item.name | uppercase }}</h3>
+        <small><strong>Price:</strong> {{ getCryptoPrice(item.stream) | number: '1.0-10' }} USDT</small><br>
+        <small><strong>My wallet:</strong> {{ item.wallet | number: '1.0-10' }} {{ item.name | uppercase }}</small><br>
+        <small><strong>All capital:</strong> {{ item.capital | number: '1.0-10' }} USDT</small><br>
+        <small><strong>Net assets:</strong> {{ netAssetOfCrypto(item) }}</small>
+      </div>
+    </div>
+  </div>
+  <div class="users-list row">
+    <h2>Transactions</h2>
+    <div *ngFor="let item of data" class="col-md-6">
+      <div class="user-item row" [class.old]="item.old">
+        <div class="col-12">
+          <h3 class="mb-1">{{item.crypto | uppercase}}</h3>
+          <small><strong>Amount:</strong> {{item.amount}}</small><br>
+          <small><strong>Price:</strong> {{item.price | number: '1.0-10'}} USDT</small><br>
+          <small><strong>Fund:</strong> {{item.cost | number: '1.0-10'}} USDT</small><br>
+          <small><strong>Net assets:</strong> {{ netAssetOfTransaction(item) }}</small><br>
+          <small><strong>Date:</strong> {{ item.dateString | date: 'dd/MM/yyyy hh:mm:ss' }}</small>
+        </div>
+        <!-- <div class="col-2 actions-col">
+          <button (click)="deleteTransaction(item.id)" class="btn btn-outline-danger action">
+            <ion-icon class="icon" name="close-outline"></ion-icon>
+          </button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
