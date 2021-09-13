@@ -3,6 +3,8 @@ import { DecimalPipe } from '@angular/common';
 import { TransactionsService } from '../services/transaction.service';
 import { CryptoService } from '../services/crypto.service';
 import { OnDestroy } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -22,10 +24,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private ws: WebSocket;
   constructor(
-    public transactionSvc: TransactionsService,
-    public cryptoSvc: CryptoService,
-    public numberPipe: DecimalPipe
-  ) { }
+    private transactionSvc: TransactionsService,
+    private cryptoSvc: CryptoService,
+    private numberPipe: DecimalPipe,
+    private angularFireAuth: AngularFireAuth,
+    private router: Router,
+  ) {}
 
   public async ngOnInit(): Promise<void> {
     const streamsSnapShot = await this.cryptoSvc.getStreams().toPromise();
@@ -91,6 +95,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     const value = amount * this.getCryptoPrice(`${crypto}usdt@trade`);
     const changeRate = this.getChangeRate(value, cost);
     return `${this.numberPipe.transform(value, '1.0-10')} USDT (${changeRate})`;
+  }
+
+  public signOut() {
+    this.angularFireAuth.signOut().then(() => {
+      this.router.navigate(['login']);
+    })
   }
 
   private countingTotalAssets(): void {

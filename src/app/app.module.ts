@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CryptoComponent } from './crypto/crypto.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { CryptoComponent } from './crypto/crypto.component';
     HomeComponent,
     AddComponent,
     EditComponent,
-    CryptoComponent
+    CryptoComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
