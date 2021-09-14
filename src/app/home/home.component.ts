@@ -15,12 +15,14 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public crypto: any = {};
+  public pnl: any = {};
   public data: any = [];
   public cryptoAssets: {[key: string]: number} = {};
   public streams: any[] = [];
   public cryptos: any;
   public allCryptoCapital = 0;
-  public cryptosNetAssets = '0 USDT';
+  public cryptosNetAssetsBTC = 0;
+  public cryptosNetAssetsUSDT = 0;
 
   private ws: WebSocket;
   constructor(
@@ -84,17 +86,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  public netAssetOfCrypto({ wallet, stream, capital}): string {
+  public netAssetOfCrypto({ id, wallet, stream, capital }): number {
     const value = wallet * this.getCryptoPrice(stream);
-    const changeRate = this.getChangeRate(value, capital);
+    this.pnl[id] = this.getChangeRate(value, capital);
     this.cryptoAssets[stream] = value;
-    return `${this.numberPipe.transform(value, '1.0-10')} USDT (${changeRate})`;
+    return value;
   }
 
-  public netAssetOfTransaction({ amount, crypto, cost}): string {
+  public netAssetOfTransaction({ id, amount, crypto, cost}): number {
     const value = amount * this.getCryptoPrice(`${crypto}usdt@trade`);
-    const changeRate = this.getChangeRate(value, cost);
-    return `${this.numberPipe.transform(value, '1.0-10')} USDT (${changeRate})`;
+    this.pnl[id] = this.getChangeRate(value, cost);
+    return value;
   }
 
   public signOut() {
@@ -105,15 +107,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private countingTotalAssets(): void {
     const value = Object.values(this.cryptoAssets).reduce((acc, cur) => acc + cur, 0);
-    const changeRate = this.getChangeRate(value, this.allCryptoCapital);
-    this.cryptosNetAssets = `
-    ${this.numberPipe.transform(value / this.getCryptoPrice('btcusdt@trade'), '1.0-10')}
-     BTC ~ ${this.numberPipe.transform(value, '1.0-10')} USDT (${changeRate})`;
+    this.pnl['super'] = this.getChangeRate(value, this.allCryptoCapital);
+    this.cryptosNetAssetsBTC = value / this.getCryptoPrice('btcusdt@trade');
+    this.cryptosNetAssetsUSDT = value;
   }
 
-  private getChangeRate(a: number, b: number): string {
+  private getChangeRate(a: number, b: number): any {
     const percent = this.numberPipe.transform((Math.abs(a - b) / b * 100), '1.0-2');
-    return a > b ? `+${percent}%` : `-${percent}%`;
+    return {
+      isNegative: a < b,
+      value: a >= b ? `+${percent}%` : `-${percent}%`
+    };
   }
 
   private valueByCrypto(cryptoName: string, value: string): number {

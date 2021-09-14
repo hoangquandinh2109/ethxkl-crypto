@@ -17,7 +17,6 @@ export class LoginComponent {
   ) { }
 
   public signIn() {
-    console.log(this.email, this.password)
     this.angularFireAuth.signInWithEmailAndPassword(this.email, this.password)
     .then((result) => {
       console.log(result)

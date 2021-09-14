@@ -43,12 +43,87 @@
   }
 
   .user-item {
-    background-color: #fff;
+    position: relative;
     padding: 20px;
-    border: 1px solid #ced4da;
 
     &.old {
-      background-color: #c3bdbd;
+      background-color: #444444;
+
+      .date {
+        color: #ffffff;
+      }
     }
+
+    &#equity-section {
+      background-color: #444444;
+    }
+
+    .date {
+      font-size: 12px;
+      color: #cccccc;
+    }
+  }
+}
+
+.centering {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 300px;
+}
+
+.al-top-left {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.al-top-right {
+  text-align: right;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.al-bottom-left {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.al-bottom-right {
+  text-align: right;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
+
+.pnl {
+  display: inline-block;
+  border: 1px solid transparent;
+  padding: 3px 6px;
+  color: #fff;
+  background-color: #198754;
+  border-radius: 0.25rem;
+
+  &.negative {
+    background-color: #dc3545;
+  }
+}
+
+.ethxkl-label {
+  color: #b3b3b3;
+  font-size: 10px;
+}
+
+.ethxkl-number {
+  color: #b3b3b3;
+
+  img {
+    width: 20px;
+    position: relative;
+    top: -2px;
   }
 }

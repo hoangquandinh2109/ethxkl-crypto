@@ -1,47 +1,95 @@
 <div class="container">
-  <!-- <div class="row">
-    <div class="col-md-4">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search by name...">
-        <div class="input-group-append">
-          <span class="input-group-text"><ion-icon class="icon" name="search"></ion-icon></span>
+  <mat-tab-group>
+    <mat-tab label="Crypto">
+      <ng-template matTabContent>
+        <div class="users-list row">
+          <div class="offset-md-3 col-md-6">
+            <div class="user-item" id="equity-section">
+              <p class="ethxkl-label">Equity Value:</p>
+              <h5 class="ethxkl-number">
+                {{ cryptosNetAssetsUSDT | number: '1.0-3' }}
+                <img src="/assets/img/usdt.png">
+              </h5>
+              <h5 class="ethxkl-number d-none d-md-inline">
+                ~{{ cryptosNetAssetsBTC | number: '1.0-10' }}
+                <img src="/assets/img/btc.png">
+              </h5>
+              <p class="ethxkl-label">Equity capital:</p>
+              <p class="ethxkl-number">
+                {{ allCryptoCapital | number: '1.0-10' }}
+                <img src="/assets/img/usdt.png">
+              </p>
+              <span class="pnl al-top-right" [class.negative]="pnl['super'].isNegative">
+                {{ pnl['super'].value }}
+              </span>
+            </div>
+          </div>
+          <div *ngFor="let item of cryptos" class="col-md-6">
+            <div class="user-item">
+              <p class="ethxkl-number">
+                <img [src]="'/assets/img/' + item.name + '.png'">
+                {{ item.wallet | number: '1.0-10' }}
+                {{ item.name | uppercase }}
+              </p>
+              <p class="ethxkl-number">
+                <ion-icon name="wallet-outline"></ion-icon>
+                {{ item.capital | number: '1.0-10' }}
+                <img src="/assets/img/usdt.png">
+              </p>
+              <p class="ethxkl-label">Net Value:</p>
+              <p class="ethxkl-number">
+                {{ netAssetOfCrypto(item) | number: '1.0-3' }}
+                <img src="/assets/img/usdt.png">
+              </p>
+              <p class="al-top-right ethxkl-number">
+                <ion-icon name="pricetag-outline"></ion-icon>
+                {{ getCryptoPrice(item.stream) | number: '1.0-10' }}
+                <img src="/assets/img/usdt.png">
+              </p>
+              <span class="pnl al-bottom-right" [class.negative]="pnl[item.id].isNegative">
+                {{ pnl[item.id].value }}
+              </span>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div> -->
-  <div class="users-list row">
-    <h2>Crypto</h2>
-    <h3><strong>All capital:</strong> {{ allCryptoCapital | number: '1.0-10' }} USDT</h3>
-    <h3><strong>Net assets:</strong> {{ cryptosNetAssets }}</h3>
-    <div *ngFor="let item of cryptos" class="col-md-6">
-      <div class="user-item">
-        <h3 class="mb-1">{{ item.name | uppercase }}</h3>
-        <small><strong>Price:</strong> {{ getCryptoPrice(item.stream) | number: '1.0-10' }} USDT</small><br>
-        <small><strong>My wallet:</strong> {{ item.wallet | number: '1.0-10' }} {{ item.name | uppercase }}</small><br>
-        <small><strong>All capital:</strong> {{ item.capital | number: '1.0-10' }} USDT</small><br>
-        <small><strong>Net assets:</strong> {{ netAssetOfCrypto(item) }}</small>
-      </div>
-    </div>
-  </div>
-  <div class="users-list row">
-    <h2>Transactions</h2>
-    <div *ngFor="let item of data" class="col-md-6">
-      <div class="user-item row" [class.old]="item.old">
-        <div class="col-12">
-          <h3 class="mb-1">{{item.crypto | uppercase}}</h3>
-          <small><strong>Amount:</strong> {{item.amount}}</small><br>
-          <small><strong>Price:</strong> {{item.price | number: '1.0-10'}} USDT</small><br>
-          <small><strong>Fund:</strong> {{item.cost | number: '1.0-10'}} USDT</small><br>
-          <small><strong>Net assets:</strong> {{ netAssetOfTransaction(item) }}</small><br>
-          <small><strong>Date:</strong> {{ item.dateString | date: 'dd/MM/yyyy hh:mm:ss' }}</small>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Transactions">
+      <ng-template matTabContent>
+        <div class="users-list row">
+          <div *ngFor="let item of data" class="col-md-6">
+            <div class="user-item " [class.old]="item.old">
+              <p class="ethxkl-number">
+                <img [src]="'/assets/img/' + item.crypto + '.png'">
+                {{ item.amount | number: '1.0-10' }}
+                {{ item.crypto | uppercase }}
+              </p>
+              <p class="ethxkl-number">
+                <ion-icon name="wallet-outline"></ion-icon>
+                {{ item.cost | number: '1.0-10' }}
+                <img src="/assets/img/usdt.png">
+              </p>
+              <div class="date">
+                {{ item.dateString | date: 'dd/MM/yyyy hh:mm:ss' }}
+              </div>
+              <p class="ethxkl-label">Net Value:</p>
+              <p class="ethxkl-number">
+                {{ netAssetOfTransaction(item) | number: '1.0-10' }}
+                <img src="/assets/img/usdt.png">
+              </p>
+              <p class="al-top-right ethxkl-number">
+                <ion-icon name="pricetag-outline"></ion-icon>
+                {{ item.price | number: '1.0-10' }}
+                <img src="/assets/img/usdt.png">
+              </p>
+              <span class="pnl al-bottom-right" [class.negative]="pnl[item.id].isNegative">
+                {{ pnl[item.id].value }}
+              </span>
+            </div>
+          </div>
         </div>
-        <!-- <div class="col-2 actions-col">
-          <button (click)="deleteTransaction(item.id)" class="btn btn-outline-danger action">
-            <ion-icon class="icon" name="close-outline"></ion-icon>
-          </button>
-        </div> -->
-      </div>
-    </div>
-  </div>
-  <a href="javascript:void(0)" (click)="signOut()">Log out</a>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+  <button mat-button color="primary" (click)="signOut()">Log out</button>
 </div>

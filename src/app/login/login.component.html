@@ -3,12 +3,16 @@
     <h2>Sign in</h2>
   </div>
   <form (submit)="signIn()" id="login-form">
-    <div class="input-group mb-1">
-      <input type="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Email">
+    <div class="form-group">
+      <mat-form-field class="input-style">
+        <input matInput type="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" placeholder="Email">
+      </mat-form-field>
     </div>
-    <div class="input-group mb-1">
-      <input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Password">
+    <div class="form-group">
+      <mat-form-field class="input-style">
+        <input matInput type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" placeholder="Password">
+      </mat-form-field>
     </div>
-    <button class="btn btn-primary" (click)="signIn()">Sign in</button>
+    <button mat-raised-button color="primary" (click)="signIn()">Sign in</button>
   </form>
 </div>

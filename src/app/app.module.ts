@@ -15,8 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { CryptoComponent } from './crypto/crypto.component';
 import { LoginComponent } from './login/login.component';
 
@@ -39,8 +38,7 @@ import { LoginComponent } from './login/login.component';
     BrowserAnimationsModule,
     MatButtonModule,
     MatInputModule,
-    MatSliderModule,
-    MatDialogModule,
+    MatTabsModule,
     HttpClientModule,
   ],
   providers: [],

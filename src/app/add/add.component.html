@@ -16,7 +16,7 @@
         <form class="create-form" [formGroup]="transactionForm" novalidate (submit)="createTransaction()">
           <div class="form-group">
             <mat-form-field class="input-style">
-              <input matInput placeholder="Amount" class="form-control" formControlName="amount">
+              <input matInput placeholder="Amount" formControlName="amount">
             </mat-form-field>
             <!-- <ng-container *ngFor="let validation of validation_messages.name">
               <mat-error *ngIf="exampleForm.get('name').hasError(validation.type) && (exampleForm.get('name').dirty || exampleForm.get('name').touched)">{{validation.message}}</mat-error>
@@ -25,7 +25,7 @@
 
           <div class="form-group">
             <mat-form-field class="input-style">
-              <input matInput type="text" placeholder="Price" class="form-control" formControlName="price">
+              <input matInput type="text" placeholder="Price" formControlName="price">
             </mat-form-field>
           </div>
 
