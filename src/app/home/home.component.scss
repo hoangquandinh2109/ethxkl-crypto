@@ -107,9 +107,18 @@
   color: #fff;
   background-color: #198754;
   border-radius: 0.25rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #146b42;
+  }
 
   &.negative {
     background-color: #dc3545;
+
+    &:hover {
+      background-color: #9e2833;
+    }
   }
 }
 
@@ -119,8 +128,6 @@
 }
 
 .ethxkl-number {
-  color: #b3b3b3;
-
   img {
     width: 20px;
     position: relative;

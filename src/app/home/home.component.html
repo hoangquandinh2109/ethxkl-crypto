@@ -19,8 +19,12 @@
                 {{ allCryptoCapital | number: '1.0-10' }}
                 <img src="/assets/img/usdt.png">
               </p>
-              <span class="pnl al-top-right" [class.negative]="pnl['super'].isNegative">
-                {{ pnl['super'].value }}
+              <span class="pnl ethxkl-number al-top-right"
+                [class.negative]="getPNL('super', 'isNegative')"
+                (click)="pnl['super'].showUSDT = !getPNL('super', 'showUSDT')"
+              >
+                {{ getPNL('super', 'showUSDT') ? getPNL('super', 'value') : getPNL('super', 'rate') }}
+                <img *ngIf="getPNL('super', 'showUSDT')" src="/assets/img/usdt.png">
               </span>
             </div>
           </div>
@@ -46,8 +50,13 @@
                 {{ getCryptoPrice(item.stream) | number: '1.0-10' }}
                 <img src="/assets/img/usdt.png">
               </p>
-              <span class="pnl al-bottom-right" [class.negative]="pnl[item.id].isNegative">
-                {{ pnl[item.id].value }}
+              <span
+                class="pnl ethxkl-number al-bottom-right"
+                [class.negative]="getPNL(item.id, 'isNegative')"
+                (click)="pnl[item.id].showUSDT = !getPNL(item.id, 'showUSDT')"
+              >
+                {{ getPNL(item.id, 'showUSDT') ? getPNL(item.id, 'value') : getPNL(item.id, 'rate') }}
+                <img *ngIf="getPNL(item.id, 'showUSDT')" src="/assets/img/usdt.png">
               </span>
             </div>
           </div>
@@ -82,8 +91,13 @@
                 {{ item.price | number: '1.0-10' }}
                 <img src="/assets/img/usdt.png">
               </p>
-              <span class="pnl al-bottom-right" [class.negative]="pnl[item.id].isNegative">
-                {{ pnl[item.id].value }}
+              <span
+                class="pnl ethxkl-number al-bottom-right"
+                [class.negative]="getPNL(item.id, 'isNegative')"
+                (click)="pnl[item.id].showUSDT = !getPNL(item.id, 'showUSDT')"
+              >
+                {{ getPNL(item.id, 'showUSDT') ? getPNL(item.id, 'value') : getPNL(item.id, 'rate') }}
+                <img *ngIf="getPNL(item.id, 'showUSDT')" src="/assets/img/usdt.png">
               </span>
             </div>
           </div>

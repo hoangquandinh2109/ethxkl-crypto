@@ -88,36 +88,62 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public netAssetOfCrypto({ id, wallet, stream, capital }): number {
     const value = wallet * this.getCryptoPrice(stream);
-    this.pnl[id] = this.getChangeRate(value, capital);
+    this.countPNL(value, capital, id);
     this.cryptoAssets[stream] = value;
     return value;
   }
 
   public netAssetOfTransaction({ id, amount, crypto, cost}): number {
     const value = amount * this.getCryptoPrice(`${crypto}usdt@trade`);
-    this.pnl[id] = this.getChangeRate(value, cost);
+    this.countPNL(value, cost, id);
     return value;
   }
 
-  public signOut() {
+  public signOut(): void {
     this.angularFireAuth.signOut().then(() => {
       this.router.navigate(['login']);
     })
   }
 
+  public getPNL(...properties: string[]): any {
+    let temp = this.pnl;
+
+    for (let i = 0; i < properties.length; i++) {
+      if (temp[properties[i]] !== undefined) {
+        temp = temp[properties[i]];
+      } else {
+        return '';
+      }
+    }
+
+    return temp;
+  }
+
   private countingTotalAssets(): void {
     const value = Object.values(this.cryptoAssets).reduce((acc, cur) => acc + cur, 0);
-    this.pnl['super'] = this.getChangeRate(value, this.allCryptoCapital);
+    this.countPNL(value, this.allCryptoCapital, 'super');
     this.cryptosNetAssetsBTC = value / this.getCryptoPrice('btcusdt@trade');
     this.cryptosNetAssetsUSDT = value;
   }
 
-  private getChangeRate(a: number, b: number): any {
+  private countPNL(a: number, b: number, pnlId: string): any {
     const percent = this.numberPipe.transform((Math.abs(a - b) / b * 100), '1.0-2');
-    return {
-      isNegative: a < b,
-      value: a >= b ? `+${percent}%` : `-${percent}%`
-    };
+    const isNegative = a < b;
+    const sign = isNegative ? '-' : '+';
+    const value = `${sign}${this.numberPipe.transform(Math.abs(a-b), '1.0-3')}`;
+
+    if (!this.pnl[pnlId]) {
+      this.pnl[pnlId] = {
+        isNegative,
+        rate: `${sign}${percent}%`,
+        value,
+        showUSDT: false
+      };
+    } else {
+      this.pnl[pnlId].isNegative = isNegative;
+      this.pnl[pnlId].rate = `${sign}${percent}%`;
+      this.pnl[pnlId].value = value;
+    }
   }
 
   private valueByCrypto(cryptoName: string, value: string): number {
