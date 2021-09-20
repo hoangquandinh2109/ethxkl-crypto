@@ -18,8 +18,7 @@ export class LoginComponent {
 
   public signIn() {
     this.angularFireAuth.signInWithEmailAndPassword(this.email, this.password)
-    .then((result) => {
-      console.log(result)
+    .then(() => {
       this.router.navigate([''])
     })
     .catch((error) => {

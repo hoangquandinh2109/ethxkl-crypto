@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CryptoService } from '../services/crypto.service';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-crypto',
@@ -12,22 +13,22 @@ export class CryptoComponent implements OnInit, OnDestroy {
   public data: any[];
   public crypto: string;
 
+  private traderId: string;
   private destroy$: Subject<void> = new Subject();
   constructor(
-    public cryptoSvc: CryptoService
+    public cryptoSvc: CryptoService,
+    private angularFireAuth: AngularFireAuth
   ) { }
 
   public ngOnInit(): void {
-    this.cryptoSvc.getCryptos()
+    this.angularFireAuth.authState
     .pipe(
       takeUntil(this.destroy$)
     )
-    .subscribe((querySnapshot) => {
-      this.data = querySnapshot.map(item => ({
-        id: item.payload.doc.id,
-        ...item.payload.doc.data()
-      }));
-    });
+    .subscribe(async ({ uid }) => {
+      this.traderId = uid;
+      this.getData();
+    })
   }
 
   public ngOnDestroy(): void {
@@ -36,9 +37,22 @@ export class CryptoComponent implements OnInit, OnDestroy {
   }
 
   public addCrypto(): void {
-    this.cryptoSvc.createCrypto(this.crypto)
+    this.cryptoSvc.createCrypto(this.crypto, this.traderId)
     .then(() => {
       this.crypto = '';
+    });
+  }
+
+  private getData(): void {
+    this.cryptoSvc.getCryptos(this.traderId)
+    .pipe(
+      takeUntil(this.destroy$)
+    )
+    .subscribe((querySnapshot) => {
+      this.data = querySnapshot.map(item => ({
+        id: item.payload.doc.id,
+        ...item.payload.doc.data()
+      }));
     });
   }
 

@@ -9,19 +9,25 @@ export class CryptoService {
 
   constructor(public db: AngularFirestore) {}
 
-  public getCryptos(): any {
-    return this.db.collection(this.collectionName).snapshotChanges();
+  public getCryptos(traderId: string): any {
+    return this.db.collection(
+      this.collectionName,
+      ref => ref.where('traderId', '==', traderId)
+    ).snapshotChanges();
   }
 
-  public getStreams(): any {
-    return this.db.collection(this.collectionName).get();
+  public getStreams(traderId: string): any {
+    return this.db.collection(
+      this.collectionName,
+      ref => ref.where('traderId', '==', traderId)
+    ).get();
   }
 
   public deleteCrypto(id: string): any {
     return this.db.collection(this.collectionName).doc(id).delete();
   }
 
-  public createCrypto(name): any {
-    return this.db.collection(this.collectionName).add({ name });
+  public createCrypto(name: string, traderId: string): any {
+    return this.db.collection(this.collectionName).add({ name, traderId });
   }
 }

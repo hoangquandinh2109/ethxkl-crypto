@@ -5,6 +5,8 @@ import { CryptoService } from '../services/crypto.service';
 import { OnDestroy } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -24,7 +26,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   public cryptosNetAssetsBTC = 0;
   public cryptosNetAssetsUSDT = 0;
 
+  public traderId: string;
   private ws: WebSocket;
+  private destroy$: Subject<void> = new Subject();
   constructor(
     private transactionSvc: TransactionsService,
     private cryptoSvc: CryptoService,
@@ -33,45 +37,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
   ) {}
 
-  public async ngOnInit(): Promise<void> {
-    const streamsSnapShot = await this.cryptoSvc.getStreams().toPromise();
-    const transactionsSnapShot = await this.transactionSvc.getTransactions().toPromise();
-
-    this.data = transactionsSnapShot.docs.map(item => {
-      const data = item.data();
-      return {
-        id: item.id,
-        ...data,
-        dateString: new Date(data.date.seconds * 1000),
-        crypto: streamsSnapShot.docs.find(x => x.id === data.crypto)?.data().name
-      };
-    }).sort((a, b) => b.date.seconds - a.date.seconds);
-    this.cryptos = streamsSnapShot.docs.map(x => {
-      const { name } = x.data();
-      return {
-        id: x.id,
-        name,
-        stream: `${name}usdt@trade`,
-        wallet: this.valueByCrypto(name, 'amount'),
-        capital: this.valueByCrypto(name, 'cost')
-      };
-    });
-    this.allCryptoCapital = this.cryptos.reduce((acc, cur) => acc + cur.capital, 0);
-
-    const streamsQuery = this.cryptos.map(x => x.stream).join('/');
-
-    this.ws = new WebSocket(
-      `wss://stream.binance.com:9443/stream?streams=${streamsQuery}`
-    );
-    this.ws.onmessage = ev => {
-      const resp = JSON.parse(ev.data);
-      this.crypto[resp.stream] = resp.data;
-      this.countingTotalAssets();
-    };
+  public ngOnInit(): void {
+    this.angularFireAuth.authState
+    .pipe(
+      takeUntil(this.destroy$)
+    )
+    .subscribe(async ({ uid }) => {
+      this.traderId = uid;
+      await this.getData();
+      this.invokeMarket();
+    })
   }
 
   public ngOnDestroy(): void {
     this.ws.close();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   public deleteTransaction(id: string): void {
@@ -119,10 +100,50 @@ export class HomeComponent implements OnInit, OnDestroy {
     return temp;
   }
 
+  private async getData(): Promise<void> {
+    const streamsSnapShot = await this.cryptoSvc.getStreams(this.traderId).toPromise();
+    const transactionsSnapShot = await this.transactionSvc.getTransactions(this.traderId).toPromise();
+
+    this.data = transactionsSnapShot.docs.map(item => {
+      const data = item.data();
+      return {
+        id: item.id,
+        ...data,
+        dateString: new Date(data.date.seconds * 1000),
+        crypto: streamsSnapShot.docs.find(x => x.id === data.crypto)?.data().name
+      };
+    }).sort((a, b) => b.date.seconds - a.date.seconds);
+
+    this.cryptos = streamsSnapShot.docs.map(x => {
+      const { name } = x.data();
+      return {
+        id: x.id,
+        name,
+        stream: `${name}usdt@trade`,
+        wallet: this.valueByCrypto(name, 'amount'),
+        capital: this.valueByCrypto(name, 'cost')
+      };
+    });
+    this.allCryptoCapital = this.cryptos.reduce((acc, cur) => acc + cur.capital, 0);
+  }
+
+  private invokeMarket(): void {
+    const streamsQuery = this.cryptos.map(x => x.stream).join('/');
+
+    this.ws = new WebSocket(
+      `wss://stream.binance.com:9443/stream?streams=${streamsQuery}`
+    );
+    this.ws.onmessage = ev => {
+      const resp = JSON.parse(ev.data);
+      this.crypto[resp.stream] = resp.data;
+      this.countingTotalAssets();
+    };
+  }
+
   private countingTotalAssets(): void {
     const value = Object.values(this.cryptoAssets).reduce((acc, cur) => acc + cur, 0);
     this.countPNL(value, this.allCryptoCapital, 'super');
-    this.cryptosNetAssetsBTC = value / this.getCryptoPrice('btcusdt@trade');
+    this.cryptosNetAssetsBTC = this.getCryptoPrice('btcusdt@trade') && value / this.getCryptoPrice('btcusdt@trade');
     this.cryptosNetAssetsUSDT = value;
   }
 

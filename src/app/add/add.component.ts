@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CryptoService } from '../services/crypto.service';
 import { TransactionsService } from '../services/transaction.service';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-add',
@@ -14,16 +15,30 @@ export class AddComponent implements OnInit, OnDestroy {
   public transactionForm: FormGroup;
   public crypto: any[];
 
+  private traderId: string;
   private destroy$: Subject<void> = new Subject();
   constructor(
     private fb: FormBuilder,
     private transactionSvc: TransactionsService,
-    private cryptoSvc: CryptoService
+    private cryptoSvc: CryptoService,
+    private angularFireAuth: AngularFireAuth
   ) { }
 
   public ngOnInit(): void {
     this.createForm();
-    this.cryptoSvc.getStreams()
+
+    this.angularFireAuth.authState
+    .pipe(
+      takeUntil(this.destroy$)
+    )
+    .subscribe(({ uid }) => {
+      this.traderId = uid;
+      this.getStreams();
+    })
+  }
+
+  public getStreams(): void {
+    this.cryptoSvc.getStreams(this.traderId)
     .pipe(
       takeUntil(this.destroy$)
     )
@@ -43,7 +58,7 @@ export class AddComponent implements OnInit, OnDestroy {
   public openDialog(): void {}
 
   public createTransaction(): void {
-    this.transactionSvc.createTransaction(this.transactionForm.value)
+    this.transactionSvc.createTransaction(this.transactionForm.value, this.traderId)
     .then(() => {
       this.transactionForm.reset();
     });

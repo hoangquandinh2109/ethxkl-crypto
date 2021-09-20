@@ -1,7 +1,14 @@
-<h1>List crypto</h1>
-<ul>
-  <li *ngFor="let item of data">{{ item.name }}</li>
-</ul>
-
-<input type="text" placeholder="Crypto" [(ngModel)]="crypto">
-<button (click)="addCrypto()">add</button>
+<div>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">List crypto</li>
+    </ol>
+  </nav>
+  <ul>
+    <li *ngFor="let item of data">{{ item.name }}</li>
+  </ul>
+  <mat-form-field class="input-style">
+    <input matInput placeholder="Amount" [(ngModel)]="crypto">
+  </mat-form-field>
+  <button mat-raised-button class="submit-button" color="primary" (click)="addCrypto()">Add</button>
+</div>

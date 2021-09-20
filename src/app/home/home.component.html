@@ -10,7 +10,7 @@
                 {{ cryptosNetAssetsUSDT | number: '1.0-3' }}
                 <img src="/assets/img/usdt.png">
               </h5>
-              <h5 class="ethxkl-number d-none d-md-inline">
+              <h5 *ngIf="cryptosNetAssetsBTC" class="ethxkl-number d-none d-md-inline">
                 ~{{ cryptosNetAssetsBTC | number: '1.0-10' }}
                 <img src="/assets/img/btc.png">
               </h5>

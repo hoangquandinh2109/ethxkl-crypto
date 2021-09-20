@@ -9,21 +9,25 @@ export class TransactionsService {
 
   constructor(public db: AngularFirestore) {}
 
-  public getTransactions(): any {
-    return this.db.collection(this.collectionName).get();
+  public getTransactions(traderId: string): any {
+    return this.db.collection(
+      this.collectionName,
+      ref => ref.where('traderId', '==', traderId
+    )).get();
   }
 
   public deleteTransaction(id: string): any {
     return this.db.collection(this.collectionName).doc(id).delete();
   }
 
-  public createTransaction({ crypto, amount, price, cost, date}): any {
+  public createTransaction({ crypto, amount, price, cost, date}, traderId: string): any {
     return this.db.collection(this.collectionName).add({
       crypto,
       amount: Number(amount),
       price: Number(price),
       cost: Number(cost),
-      date: date ? new Date(date) : new Date()
+      date: date ? new Date(date) : new Date(),
+      traderId
     });
   }
 }
