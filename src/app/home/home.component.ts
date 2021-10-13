@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.traderId = uid;
       await this.getData();
       this.invokeMarket();
-    })
+    });
   }
 
   public ngOnDestroy(): void {
@@ -151,7 +151,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const percent = this.numberPipe.transform((Math.abs(a - b) / b * 100), '1.0-2');
     const isNegative = a < b;
     const sign = isNegative ? '-' : '+';
-    const value = `${sign}${this.numberPipe.transform(Math.abs(a-b), '1.0-3')}`;
+    const value = `${sign}${this.numberPipe.transform(Math.abs(a - b), '1.0-3')}`;
 
     if (!this.pnl[pnlId]) {
       this.pnl[pnlId] = {
@@ -169,7 +169,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private valueByCrypto(cryptoName: string, value: string): number {
     return this.data.reduce((acc, cur) => {
-      return acc + (cur.crypto === cryptoName ? cur[value] || 0 : 0);
+      const currentValue = (cur.isSell ? -1 : 1) * cur[value] || 0;
+      return acc + (cur.crypto === cryptoName ? currentValue : 0);
     }, 0);
   }
 }
