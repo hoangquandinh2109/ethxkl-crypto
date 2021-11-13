@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CryptoComponent } from './crypto/crypto.component';
 import { LoginComponent } from './login/login.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { LoginComponent } from './login/login.component';
     AddComponent,
     EditComponent,
     CryptoComponent,
-    LoginComponent
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,11 +41,10 @@ import { LoginComponent } from './login/login.component';
     MatInputModule,
     MatTabsModule,
     HttpClientModule,
+    MatCheckboxModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}

@@ -20,13 +20,14 @@ export class TransactionsService {
     return this.db.collection(this.collectionName).doc(id).delete();
   }
 
-  public createTransaction({ crypto, amount, price, cost, date}, traderId: string): any {
+  public createTransaction({ crypto, amount, price, cost, date, isSell}, traderId: string): any {
     return this.db.collection(this.collectionName).add({
       crypto,
       amount: Number(amount),
       price: Number(price),
       cost: Number(cost),
       date: date ? new Date(date) : new Date(),
+      isSell: Boolean(isSell),
       traderId
     });
   }

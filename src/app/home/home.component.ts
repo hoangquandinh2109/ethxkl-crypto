@@ -47,6 +47,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       await this.getData();
       this.invokeMarket();
     });
+
+    (window as any).getData = () => {
+      console.log(this.data);
+    };
+    (window as any).delete = (id) => {
+      this.deleteTransaction(id)
+    };
   }
 
   public ngOnDestroy(): void {
@@ -81,17 +88,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public signOut(): void {
+    // this.angularFireAuth.currentUser.then(x => {
+    //   x.updatePassword('yoh2609').then(x => {
+    //     console.log(x)
+    //   })
+    // })
     this.angularFireAuth.signOut().then(() => {
       this.router.navigate(['login']);
-    })
+    });
   }
 
   public getPNL(...properties: string[]): any {
     let temp = this.pnl;
 
-    for (let i = 0; i < properties.length; i++) {
-      if (temp[properties[i]] !== undefined) {
-        temp = temp[properties[i]];
+    for (const property of properties) {
+      if (temp[property] !== undefined) {
+        temp = temp[property];
       } else {
         return '';
       }

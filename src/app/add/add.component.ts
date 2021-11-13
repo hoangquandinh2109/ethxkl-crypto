@@ -74,7 +74,8 @@ export class AddComponent implements OnInit, OnDestroy {
       amount: ['', Validators.required ],
       price: ['', Validators.required ],
       cost: ['', Validators.required ],
-      date: ['']
+      date: [''],
+      isSell: ['']
     });
   }
 

@@ -63,44 +63,83 @@
         </div>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Transactions">
+    <mat-tab label="Buy">
       <ng-template matTabContent>
         <div class="users-list row">
-          <div *ngFor="let item of data" class="col-md-6">
-            <div class="user-item " [class.old]="item.old">
-              <p class="ethxkl-number">
-                <img [src]="'/assets/img/' + item.crypto + '.png'">
-                {{ item.amount | number: '1.0-10' }}
-                {{ item.crypto | uppercase }}
-              </p>
-              <p class="ethxkl-number">
-                <ion-icon name="wallet-outline"></ion-icon>
-                {{ item.cost | number: '1.0-10' }}
-                <img src="/assets/img/usdt.png">
-              </p>
-              <div class="date">
-                {{ item.dateString | date: 'dd/MM/yyyy hh:mm:ss' }}
+          <ng-container *ngFor="let item of data">
+            <div *ngIf="!item.isSell" class="col-md-6">
+              <div class="user-item " [class.old]="item.old">
+                <p class="ethxkl-number">
+                  <img [src]="'/assets/img/' + item.crypto + '.png'">
+                  {{ item.amount | number: '1.0-10' }}
+                  {{ item.crypto | uppercase }}
+                </p>
+                <p class="ethxkl-number">
+                  <ion-icon name="wallet-outline"></ion-icon>
+                  {{ item.cost | number: '1.0-10' }}
+                  <img src="/assets/img/usdt.png">
+                </p>
+                <div class="date">
+                  {{ item.dateString | date: 'dd/MM/yyyy hh:mm:ss' }}
+                </div>
+                <p class="ethxkl-label">Net Value:</p>
+                <p class="ethxkl-number">
+                  {{ netAssetOfTransaction(item) | number: '1.0-10' }}
+                  <img src="/assets/img/usdt.png">
+                </p>
+                <p class="al-top-right ethxkl-number">
+                  <ion-icon name="pricetag-outline"></ion-icon>
+                  {{ item.price | number: '1.0-10' }}
+                  <img src="/assets/img/usdt.png">
+                </p>
+                <span
+                  class="pnl ethxkl-number al-bottom-right"
+                  [class.negative]="getPNL(item.id, 'isNegative')"
+                  (click)="pnl[item.id].showUSDT = !getPNL(item.id, 'showUSDT')"
+                >
+                  {{ getPNL(item.id, 'showUSDT') ? getPNL(item.id, 'value') : getPNL(item.id, 'rate') }}
+                  <img *ngIf="getPNL(item.id, 'showUSDT')" src="/assets/img/usdt.png">
+                </span>
               </div>
-              <p class="ethxkl-label">Net Value:</p>
-              <p class="ethxkl-number">
-                {{ netAssetOfTransaction(item) | number: '1.0-10' }}
-                <img src="/assets/img/usdt.png">
-              </p>
-              <p class="al-top-right ethxkl-number">
-                <ion-icon name="pricetag-outline"></ion-icon>
-                {{ item.price | number: '1.0-10' }}
-                <img src="/assets/img/usdt.png">
-              </p>
-              <span
-                class="pnl ethxkl-number al-bottom-right"
-                [class.negative]="getPNL(item.id, 'isNegative')"
-                (click)="pnl[item.id].showUSDT = !getPNL(item.id, 'showUSDT')"
-              >
-                {{ getPNL(item.id, 'showUSDT') ? getPNL(item.id, 'value') : getPNL(item.id, 'rate') }}
-                <img *ngIf="getPNL(item.id, 'showUSDT')" src="/assets/img/usdt.png">
-              </span>
             </div>
-          </div>
+          </ng-container>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Sell">
+      <ng-template matTabContent>
+        <div class="users-list row">
+          <ng-container *ngFor="let item of data">
+            <div *ngIf="item.isSell" class="col-md-6">
+              <div class="user-item " [class.old]="item.old">
+                <p class="ethxkl-number">
+                  <img [src]="'/assets/img/' + item.crypto + '.png'">
+                  {{ item.amount | number: '1.0-10' }}
+                  {{ item.crypto | uppercase }}
+                </p>
+                <div class="date">
+                  {{ item.dateString | date: 'dd/MM/yyyy hh:mm:ss' }}
+                </div>
+                <p class="ethxkl-label">Capital recovery:</p>
+                <p class="ethxkl-number">
+                  {{ item.cost | number: '1.0-10' }}
+                  <img src="/assets/img/usdt.png">
+                </p>
+                <p class="al-top-right ethxkl-number">
+                  <ion-icon name="pricetag-outline"></ion-icon>
+                  {{ item.price | number: '1.0-10' }}
+                  <img src="/assets/img/usdt.png">
+                </p>
+                <span
+                  class="pnl ethxkl-number al-bottom-right"
+                  [class.negative]="item.benefit < 0"
+                >
+                  {{ item.benefit }}
+                  <img src="/assets/img/usdt.png">
+                </span>
+              </div>
+            </div>
+          </ng-container>
         </div>
       </ng-template>
     </mat-tab>
